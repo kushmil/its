@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VITCOORE - ITS Learning Portal Coming Soon</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Config matching the Duolingo and iOS styles -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#58CC02',
+              'green-hover': '#4BB200',
+              'green-shadow': '#61B800',
+              blue: '#1CB0F6',
+              'blue-hover': '#189edc',
+              'blue-shadow': '#1692cd',
+              darkBlue: '#100F3E',
+              orange: '#FF9600',
+              golden: '#FFC800',
+              red: '#FF4B4B',
+              'red-hover': '#e04343'
+            }
+          },
+          fontFamily: {
+            nunito: ['Nunito', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Font: Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .btn-3d {
+      transition: all 0.08s cubic-bezier(0, 0, 0.2, 1);
+    }
+    .btn-3d:active {
+      transform: translateY(4px);
+      box-shadow: none !important;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1.5px;
+      margin-left: 16px;
+      background-color: rgb(229, 229, 229);
+    }
+    .dark .section-label::after {
+      background-color: rgb(55, 65, 81);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#F9FBF5] text-zinc-800 dark:bg-[#141F24] dark:text-zinc-100 min-h-screen flex flex-col pt-[90px]">
+
+  <!-- ANIMATED SPLASH SCREEN OVERLAY -->
+  <div id="splash-screen" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#F9FBF5] dark:bg-[#100F3E] transition-all duration-300">
+    <div class="text-center px-4 max-w-md w-full">
+      <div class="w-24 h-24 mx-auto mb-6 bg-brand-green text-white rounded-3xl shadow-[0_8px_0_#4BB200] flex items-center justify-center animate-bounce">
+        <svg class="w-14 h-14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      </div>
+
+      <h1 class="text-3xl font-black text-brand-green tracking-tight dark:text-white uppercase mb-2">
+        VITCOORE PORTAL
+      </h1>
+      <p class="text-sm font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase mb-6">
+        PRE-LAUNCH STATUS
+      </p>
+
+      <div class="w-full h-4 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden p-0.5 border border-zinc-300 dark:border-zinc-700">
+        <div id="splash-progress" class="h-full bg-brand-blue rounded-full transition-all duration-200" style="width: 0%"></div>
+      </div>
+      <span class="text-[11px] font-extrabold text-zinc-400 dark:text-zinc-500 mt-2 block uppercase tracking-widest">
+        Syncing launch clock...
+      </span>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION WINDOW -->
+  <div id="toast-window" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-brand-darkBlue text-white px-5 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-2xl border border-white/10 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <span id="toast-text" class="text-sm font-black uppercase tracking-wide">Switched!</span>
+  </div>
+
+  <!-- FIXED NAVBAR WITH DYNAMIC ISLAND SWITCHER -->
+  <nav class="fixed top-0 left-0 right-0 h-[68px] bg-white dark:bg-[#141F24] border-b-2 border-zinc-200 dark:border-[#202F36] z-50 transition-colors">
+    <div class="max-w-[1200px] h-full mx-auto px-4 sm:px-6 flex items-center justify-between gap-2 overflow-hidden">
+      
+      <!-- Logo Container -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-brand-green flex items-center justify-center text-white font-black text-xl shrink-0 shadow-[0_3px_0_#4BB200]">
+          V
+        </div>
+        <div class="leading-tight hidden sm:block">
+          <h1 class="text-md sm:text-lg font-black tracking-tight text-zinc-900 dark:text-white uppercase flex items-center gap-1.5">
+            vitcoore <span class="text-xs text-zinc-400 dark:text-zinc-500 font-extrabold lowercase">it academy</span>
+          </h1>
+          <span class="text-[10px] font-extrabold text-brand-blue uppercase tracking-widest block">
+            JAC BOARD • IT-ITeS
+          </span>
+        </div>
+      </div>
+
+      <!-- iOS DYNAMIC ISLAND CLASS TOGGLER -->
+      <div class="flex bg-black dark:bg-[#100F3E] p-1.5 rounded-full border border-zinc-800 shadow-2xl w-[170px] sm:w-[210px] shrink-0 items-center relative h-[40px] transition-all">
+        <button
+          id="btn-class-xi"
+          onclick="handleClassSwitch('XI')"
+          class="flex-1 h-full text-center text-[11px] sm:text-xs font-black rounded-full transition-all duration-300 z-10 bg-brand-green text-white shadow-sm"
+        >
+          Class XI
+        </button>
+        <button
+          id="btn-class-xii"
+          onclick="handleClassSwitch('XII')"
+          class="flex-1 h-full text-center text-[11px] sm:text-xs font-black rounded-full transition-all duration-300 z-10 text-zinc-400 hover:text-white"
+        >
+          Class XII
+        </button>
+      </div>
+
+      <!-- Theme Switcher -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          onclick="handleToggleTheme()"
+          class="relative w-10 h-10 flex items-center justify-center rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-[#1F2E35] dark:hover:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 transition-all duration-150 active:scale-95 shadow-sm overflow-hidden"
+          title="Toggle Theme"
+        >
+          <div class="relative w-5 h-5 flex items-center justify-center">
+            <!-- Sun Icon -->
+            <svg
+              id="theme-sun-icon"
+              class="absolute w-5 h-5 text-brand-orange transform transition-all duration-500 ease-in-out rotate-0 scale-100 opacity-100"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="5" fill="currentColor"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+
+            <!-- Moon Icon -->
+            <svg
+              id="theme-moon-icon"
+              class="absolute w-5 h-5 text-brand-blue transform transition-all duration-500 ease-in-out -rotate-90 scale-0 opacity-0"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-[1200px] w-full mx-auto px-4 sm:px-6 pt-4 pb-16 flex-1 flex flex-col justify-center">
+    
+    <!-- COMMING SOON MAIN CARD -->
+    <div class="bg-white dark:bg-[#1F2E35] rounded-3xl border-2 border-zinc-200 dark:border-zinc-700 p-6 sm:p-10 text-center max-w-3xl mx-auto w-full space-y-8 shadow-sm">
+      
+      <!-- Interactive Glowing Badge -->
+      <div class="inline-flex items-center gap-2 bg-brand-green/10 dark:bg-brand-green/20 border-2 border-brand-green/30 text-brand-green px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider animate-pulse">
+        🚀 Live Launch: Monday, 15 June 2026
+      </div>
+
+      <!-- Main Welcome Headers -->
+      <div class="space-y-3">
+        <h2 id="coming-soon-main-heading" class="text-3xl sm:text-5xl font-black text-zinc-900 dark:text-white leading-tight">
+          Class XI ITS Classes Starting Soon!
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-500 dark:text-zinc-400 font-bold max-w-xl mx-auto leading-relaxed">
+          Monday, 15 June ko YouTube Channel <span class="text-brand-red font-black">@vitcoore</span> par ITS (Information Technology) ka <span class="underline">L1 Masterclass</span> live shuru ho raha hai.
+        </p>
+      </div>
+
+      <!-- HUGE COUNTDOWN TIMER GRID -->
+      <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto">
+        <!-- Days Card -->
+        <div class="bg-[#F9FBF5] dark:bg-[#141F24] p-3 sm:p-4 rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 border-b-4">
+          <span id="timer-days" class="text-2xl sm:text-4xl font-black text-brand-blue block">00</span>
+          <span class="text-[9px] sm:text-xs font-extrabold text-zinc-400 uppercase tracking-widest block mt-1">Days</span>
+        </div>
+        <!-- Hours Card -->
+        <div class="bg-[#F9FBF5] dark:bg-[#141F24] p-3 sm:p-4 rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 border-b-4">
+          <span id="timer-hours" class="text-2xl sm:text-4xl font-black text-brand-orange block">00</span>
+          <span class="text-[9px] sm:text-xs font-extrabold text-zinc-400 uppercase tracking-widest block mt-1">Hours</span>
+        </div>
+        <!-- Minutes Card -->
+        <div class="bg-[#F9FBF5] dark:bg-[#141F24] p-3 sm:p-4 rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 border-b-4">
+          <span id="timer-minutes" class="text-2xl sm:text-4xl font-black text-brand-green block">00</span>
+          <span class="text-[9px] sm:text-xs font-extrabold text-zinc-400 uppercase tracking-widest block mt-1">Mins</span>
+        </div>
+        <!-- Seconds Card -->
+        <div class="bg-[#F9FBF5] dark:bg-[#141F24] p-3 sm:p-4 rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 border-b-4">
+          <span id="timer-seconds" class="text-2xl sm:text-4xl font-black text-brand-red block">00</span>
+          <span class="text-[9px] sm:text-xs font-extrabold text-zinc-400 uppercase tracking-widest block mt-1">Secs</span>
+        </div>
+      </div>
+
+      <!-- YOUTUBE NOTIFY ME BANNER -->
+      <div class="bg-brand-red/5 dark:bg-brand-red/10 border-2 border-brand-red/20 rounded-3xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-left max-w-xl mx-auto">
+        <div class="space-y-1">
+          <h4 class="text-sm sm:text-base font-black text-brand-red uppercase tracking-wider">🔔 Channel Alert: @vitcoore</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-300 font-semibold leading-relaxed">
+            Abhi subscribe karein aur Bell Icon ko dabayein taaki launch day par live notification mile.
+          </p>
+        </div>
+        <a 
+          href="https://youtube.com/@vitcoore" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn-3d shrink-0 h-11 px-5 bg-brand-red hover:bg-[#CC3C3C] text-white rounded-2xl font-black text-xs uppercase shadow-[0_4px_0_#992020] flex items-center justify-center gap-1.5"
+        >
+          <span>📺</span> Subscribe
+        </a>
+      </div>
+
+      <!-- ROADMAP TIMELINE (Dynamically shifts details according to dynamic island class toggle) -->
+      <div class="space-y-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-left max-w-xl mx-auto">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Launch Day Agenda (Class 1)</span>
+          <span id="active-agenda-class" class="text-xs font-black text-brand-blue uppercase">Class XI ITS</span>
+        </div>
+        
+        <div class="bg-zinc-50 dark:bg-[#141F24] p-5 rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 space-y-3">
+          <div class="flex items-center gap-2 text-sm font-black text-zinc-900 dark:text-white">
+            <span class="text-brand-orange">📅</span>
+            <span id="active-agenda-topic">Unit 1: Introduction to IT & ITes Industry</span>
+          </div>
+          <p id="active-agenda-details" class="text-xs text-zinc-500 dark:text-zinc-400 font-semibold leading-relaxed">
+            In this opening session, we will cover the structure of Information Technology Enabled Services, BPO/KPO fields, and career scope according to the official JAC Board syllabus.
+          </p>
+          <div class="flex items-center gap-4 text-[11px] font-black text-zinc-400 uppercase tracking-wide">
+            <span>⏱️ Time: 09:00 AM IST</span>
+            <span>📂 Includes Free PDF Notes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMAIL PRE-REGISTRATION COMPONENT -->
+      <div class="bg-[#F9FBF5] dark:bg-[#141F24] border-2 border-zinc-200 dark:border-zinc-700 rounded-3xl p-6 max-w-xl mx-auto text-left space-y-4">
+        <div class="space-y-1">
+          <h4 class="text-sm font-black text-zinc-950 dark:text-white uppercase tracking-wider">Get Free Lecture Notes & PDFs</h4>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 font-bold">
+            Apna details register karein taaki launch day par aapko ITS notes ka exclusive links email par mil sake.
+          </p>
+        </div>
+
+        <form onsubmit="handlePreRegistrationSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+          <input 
+            id="reg-name"
+            type="text" 
+            required
+            placeholder="Your Name"
+            class="flex-1 h-11 px-4 border-2 border-zinc-200 dark:border-zinc-700 bg-transparent rounded-2xl text-xs sm:text-sm font-semibold focus:border-brand-blue focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-600 transition-colors"
+          />
+          <input 
+            id="reg-email"
+            type="email" 
+            required
+            placeholder="Your Email"
+            class="flex-1 h-11 px-4 border-2 border-zinc-200 dark:border-zinc-700 bg-transparent rounded-2xl text-xs sm:text-sm font-semibold focus:border-brand-blue focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-600 transition-colors"
+          />
+          <button
+            type="submit"
+            class="btn-3d h-11 px-6 bg-brand-green hover:bg-brand-green-hover text-white rounded-2xl font-black text-xs uppercase shadow-[0_4px_0_#4BB200]"
+          >
+            Register
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- INSTRUCTOR BRIEF PANEL -->
+    <section class="mt-16 pt-12 border-t-2 border-zinc-200 dark:border-zinc-800 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Profile Card -->
+      <div class="bg-white dark:bg-[#1F2E35] rounded-3xl border-2 border-zinc-200 dark:border-zinc-700 p-6 flex flex-col justify-between space-y-6">
+        <div class="space-y-4 text-center sm:text-left">
+          <div class="w-16 h-16 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center text-3xl mx-auto sm:mx-0">
+            👨‍💻
+          </div>
+          <div class="space-y-1">
+            <h4 class="text-md font-black text-zinc-900 dark:text-white">Instructor Profile</h4>
+            <span class="text-lg font-black text-brand-green">@vitcoore Channel</span>
+            <p class="text-xs text-zinc-400 dark:text-zinc-500 font-semibold leading-relaxed">
+              Primary vocational education educator guiding Jharkhand Academic Council (JAC) vocational students toward top board grades.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-2.5 pt-4 border-t border-zinc-100 dark:border-zinc-800 text-xs font-bold text-zinc-500 dark:text-zinc-400">
+          <a href="mailto:vitcoore@gmail.com" class="flex items-center gap-2 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">
+            <span>📧</span> <span class="font-semibold text-zinc-600 dark:text-zinc-300">vitcoore@gmail.com</span>
+          </a>
+          <a href="https://instagram.com/vitcoore" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-[#E1306C] transition-colors">
+            <span>📸</span> <span class="font-semibold text-zinc-600 dark:text-zinc-300">@vitcoore (Instagram)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Doubts Ask Form -->
+      <div class="bg-white dark:bg-[#1F2E35] rounded-3xl border-2 border-zinc-200 dark:border-zinc-700 p-6 lg:col-span-2 space-y-4">
+        <div class="space-y-1">
+          <h4 class="text-md font-black text-zinc-900 dark:text-white">Ask Your IT Doubts</h4>
+          <p class="text-xs text-zinc-400 dark:text-zinc-500 font-semibold">
+            Submit your vocational syllabus questions directly to the instructor.
+          </p>
+        </div>
+
+        <form id="contact-form" onsubmit="handleContactSubmit(event)" class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input 
+              id="form-name"
+              type="text" 
+              required
+              placeholder="Student Name"
+              class="w-full h-11 px-4 border-2 border-zinc-200 dark:border-zinc-700 bg-transparent rounded-xl text-xs sm:text-sm font-semibold focus:border-brand-blue focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-600 transition-colors"
+            />
+            <input 
+              id="form-email"
+              type="email" 
+              required
+              placeholder="Email ID"
+              class="w-full h-11 px-4 border-2 border-zinc-200 dark:border-zinc-700 bg-transparent rounded-xl text-xs sm:text-sm font-semibold focus:border-brand-blue focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-600 transition-colors"
+            />
+          </div>
+          <textarea 
+            id="form-msg"
+            rows="3"
+            required
+            placeholder="Type your question or query here..."
+            class="w-full p-4 border-2 border-zinc-200 dark:border-zinc-700 bg-transparent rounded-xl text-xs sm:text-sm font-semibold focus:border-brand-blue focus:outline-none placeholder-zinc-400 dark:placeholder-zinc-600 transition-colors resize-none"
+          ></textarea>
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="btn-3d h-11 px-6 bg-brand-blue hover:bg-brand-blue-hover text-white rounded-xl font-black text-xs uppercase shadow-[0_3px_0_#1692cd] tracking-wide"
+            >
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- APPLICATION FOOTER -->
+  <footer class="bg-white dark:bg-[#141F24] border-t-2 border-zinc-200 dark:border-[#202F36] py-10 transition-colors text-center px-4">
+    <div class="max-w-[1200px] mx-auto space-y-4">
+      <p class="text-xs text-zinc-400 dark:text-zinc-500 font-black uppercase tracking-widest">
+        VITCOORE ACADEMY • JAC Board Vocational Learning
+      </p>
+      <div class="flex items-center justify-center gap-6 text-xs font-bold text-zinc-400 dark:text-zinc-500">
+        <a href="mailto:vitcoore@gmail.com" class="hover:underline">Email</a>
+        <span class="w-1.5 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full"></span>
+        <a href="https://instagram.com/vitcoore" target="_blank" rel="noopener noreferrer" class="hover:underline">Instagram</a>
+        <span class="w-1.5 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full"></span>
+        <a href="https://youtube.com/@vitcoore" target="_blank" rel="noopener noreferrer" class="hover:underline">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 100% PURE NATIVE VANILLA JAVASCRIPT LOGIC ENGINE -->
+  <script>
+    // State Trackers
+    let currentClass = 'XI';
+    let theme = 'light';
+    
+    // Target Live Launch Date: June 15, 2026, 09:00:00 AM IST (Indian Standard Time)
+    const targetLaunchDate = new Date("2026-06-15T09:00:00+05:30").getTime();
+
+    // Roadmaps for the upcoming classes to show dynamically when toggling
+    const agendaDatabase = {
+      XI: {
+        heading: "Class XI ITS Classes Starting Soon!",
+        badge: "Class XI ITS",
+        topic: "Unit 1: Introduction to IT & ITes Industry",
+        description: "In this opening masterclass, we will cover the structure of Information Technology Enabled Services, BPO/KPO domains, and career possibilities according to the official JAC Board guidelines."
+      },
+      XII: {
+        heading: "Class XII ITS Classes Starting Soon!",
+        badge: "Class XII ITS",
+        topic: "Unit 1: Relational Database & SQL Queries",
+        description: "Get ready to understand relational schemas, table key relationships (Primary Key vs Foreign Key), and writing pure SQL queries to manage database records easily."
+      }
+    };
+
+    // Web Audio Sound Generator (Synthesizer Engine)
+    function playSynthSound(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'correct') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          osc.start();
+          setTimeout(() => {
+            osc.frequency.setValueAtTime(659.25, ctx.currentTime);
+          }, 100);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
+          osc.stop(ctx.currentTime + 0.5);
+        } else if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, ctx.currentTime);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          osc.start();
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+          osc.stop(ctx.currentTime + 0.12);
+        } else if (type === 'congrats') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(261.63, ctx.currentTime);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          osc.start();
+          setTimeout(() => osc.frequency.setValueAtTime(329.63, ctx.currentTime), 80);
+          setTimeout(() => osc.frequency.setValueAtTime(392.00, ctx.currentTime), 160);
+          setTimeout(() => osc.frequency.setValueAtTime(523.25, ctx.currentTime), 240);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.7);
+          osc.stop(ctx.currentTime + 0.8);
+        }
+      } catch (e) {
+        // Handled silently
+      }
+    }
+
+    // Toast Alert system
+    function showToast(message, colorClass = 'bg-brand-darkBlue') {
+      const toast = document.getElementById('toast-window');
+      const textNode = document.getElementById('toast-text');
+      
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] ${colorClass} text-white px-5 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-2xl border border-white/10 transition-all duration-300 transform translate-y-0 opacity-100`;
+      textNode.textContent = message;
+
+      setTimeout(() => {
+        toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-brand-darkBlue text-white px-5 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-2xl border border-white/10 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none";
+      }, 3000);
+    }
+
+    // SPLASH SCREEN TIMELINE
+    window.addEventListener('DOMContentLoaded', () => {
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 8;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(progressInterval);
+          setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+              splash.classList.add('hidden');
+              playSynthSound('congrats');
+            }, 350);
+          }, 400);
+        }
+        document.getElementById('splash-progress').style.width = `${progress}%`;
+      }, 100);
+
+      // Run live ticking clock
+      startLaunchClock();
+    });
+
+    // Real-Time Countdown Mechanism
+    function startLaunchClock() {
+      const countdownInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const timeRemaining = targetLaunchDate - now;
+
+        if (timeRemaining <= 0) {
+          clearInterval(countdownInterval);
+          document.getElementById('timer-days').textContent = "00";
+          document.getElementById('timer-hours').textContent = "00";
+          document.getElementById('timer-minutes').textContent = "00";
+          document.getElementById('timer-seconds').textContent = "00";
+          showToast("🚀 We are Live on @vitcoore!", "bg-brand-green");
+          return;
+        }
+
+        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+        document.getElementById('timer-days').textContent = String(days).padStart(2, '0');
+        document.getElementById('timer-hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('timer-minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('timer-seconds').textContent = String(seconds).padStart(2, '0');
+      }, 1000);
+    }
+
+    // Class toggle switcher (Dynamic Island style)
+    function handleClassSwitch(className) {
+      playSynthSound('click');
+      currentClass = className;
+
+      const btnXI = document.getElementById('btn-class-xi');
+      const btnXII = document.getElementById('btn-class-xii');
+
+      if (className === 'XI') {
+        btnXI.className = "flex-1 h-full text-center text-xs font-black rounded-full transition-all duration-300 z-10 bg-brand-green text-white shadow-sm";
+        btnXII.className = "flex-1 h-full text-center text-xs font-black rounded-full transition-all duration-300 z-10 text-zinc-400 hover:text-white";
+      } else {
+        btnXII.className = "flex-1 h-full text-center text-xs font-black rounded-full transition-all duration-300 z-10 bg-brand-green text-white shadow-sm";
+        btnXI.className = "flex-1 h-full text-center text-xs font-black rounded-full transition-all duration-300 z-10 text-zinc-400 hover:text-white";
+      }
+
+      // Update coming soon contents dynamically based on active class toggle
+      const selectedAgenda = agendaDatabase[className];
+      document.getElementById('coming-soon-main-heading').textContent = selectedAgenda.heading;
+      document.getElementById('active-agenda-class').textContent = selectedAgenda.badge;
+      document.getElementById('active-agenda-topic').textContent = selectedAgenda.topic;
+      document.getElementById('active-agenda-details').textContent = selectedAgenda.description;
+
+      showToast(`Syllabus roadmap loaded for ${className}!`, 'bg-brand-blue');
+    }
+
+    // Toggle Themes (Sun/Moon animations)
+    function handleToggleTheme() {
+      playSynthSound('click');
+      const htmlNode = document.documentElement;
+      const sunIcon = document.getElementById('theme-sun-icon');
+      const moonIcon = document.getElementById('theme-moon-icon');
+
+      if (theme === 'light') {
+        theme = 'dark';
+        htmlNode.classList.add('dark');
+        
+        sunIcon.classList.replace('rotate-0', 'rotate-90');
+        sunIcon.classList.replace('scale-100', 'scale-0');
+        sunIcon.classList.replace('opacity-100', 'opacity-0');
+
+        moonIcon.classList.replace('-rotate-90', 'rotate-0');
+        moonIcon.classList.replace('scale-0', 'scale-100');
+        moonIcon.classList.replace('opacity-0', 'opacity-100');
+      } else {
+        theme = 'light';
+        htmlNode.classList.remove('dark');
+
+        sunIcon.classList.replace('rotate-90', 'rotate-0');
+        sunIcon.classList.replace('scale-0', 'scale-100');
+        sunIcon.classList.replace('opacity-0', 'opacity-100');
+
+        moonIcon.classList.replace('rotate-0', '-rotate-90');
+        moonIcon.classList.replace('scale-100', 'scale-0');
+        moonIcon.classList.replace('opacity-100', 'opacity-0');
+      }
+    }
+
+    // Pre-Registration Submit Handler
+    function handlePreRegistrationSubmit(event) {
+      event.preventDefault();
+      playSynthSound('correct');
+      showToast("🎉 Registered! Free ITS notes links will be emailed.", "bg-brand-green");
+      
+      document.getElementById('reg-name').value = '';
+      document.getElementById('reg-email').value = '';
+    }
+
+    // Ask your doubts submission
+    function handleContactSubmit(event) {
+      event.preventDefault();
+      playSynthSound('correct');
+      showToast("✉️ Query Sent! @vitcoore will answer your doubt soon.", "bg-brand-green");
+      
+      document.getElementById('form-name').value = '';
+      document.getElementById('form-email').value = '';
+      document.getElementById('form-msg').value = '';
+    }
+  </script>
+</body>
+</html>
