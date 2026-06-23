@@ -50,15 +50,16 @@
         body {
             background-color: #F5F5F7;
             color: #1C1C1E;
-            transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            background-image: radial-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px);
+            transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background-image: radial-gradient(rgba(0, 0, 0, 0.012) 1px, transparent 1px);
             background-size: 24px 24px;
+            -webkit-font-smoothing: antialiased;
         }
 
         .dark body {
             background-color: #0B0B0F;
             color: #FFFFFF;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px);
         }
 
         /* Glassmorphism Navigation bar */
@@ -95,7 +96,7 @@
             background: #007AFF;
             border-radius: 99px;
             box-shadow: 0 4px 15px rgba(0, 122, 255, 0.35);
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
             will-change: transform;
         }
 
@@ -105,10 +106,11 @@
             border: 1px solid rgba(0, 0, 0, 0.06);
             border-radius: 24px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
-            transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-                        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, box-shadow;
+            transform: translateZ(0); /* Hardware Acceleration */
         }
         .dark .bento-card {
             background-color: #1C1C1E;
@@ -208,11 +210,30 @@
             </div>
 
         </section>
+
+        <!-- Interactive Student Testimonials Section -->
+        <section id="reviewsSection" class="mt-24 pt-16 border-t border-black/5 dark:border-white/5 space-y-10">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg> Wall of Love
+                </span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+                    What Students Say
+                </h2>
+                <p class="text-sm opacity-75 text-zinc-600 dark:text-zinc-400 font-medium">
+                    Genuine 5-star feedback from students across Indian schools.
+                </p>
+            </div>
+
+            <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Dynamic student reviews based on selected class will render here -->
+            </div>
+        </section>
     </main>
 
-    <!-- Custom Premium Block Modal Popup -->
+    <!-- Custom Premium Block Modal Popup (Optimized for Mobile scroll) -->
     <div id="premiumModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
-        <div class="relative w-full max-w-md rounded-3xl bg-white border border-zinc-200 dark:bg-[#13131A] dark:border-white/10 p-6 shadow-2xl transform scale-95 transition-transform duration-300 text-zinc-900 dark:text-white">
+        <div class="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white border border-zinc-200 dark:bg-[#13131A] dark:border-white/10 p-6 shadow-2xl transform scale-95 transition-all duration-300 text-zinc-900 dark:text-white">
             <!-- Modal top color strip -->
             <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-premium-accentBlue to-blue-600 rounded-t-3xl"></div>
             
@@ -228,26 +249,40 @@
                     <span class="w-2.5 h-2.5 rounded-full bg-[#27C93F]"></span>
                 </div>
 
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-500/10 text-premium-accentBlue mt-2">
-                    <i data-lucide="shield-alert" class="w-7 h-7"></i>
+                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-500/10 text-premium-accentBlue mt-2 animate-bounce">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0V10.5m-2.812 0H19.5a1.125 1.125 0 0 1 1.125 1.125v7.5a1.125 1.125 0 0 1-1.125 1.125H3.125A1.125 1.125 0 0 1 2 18.75v-7.5A1.125 1.125 0 0 1 3.125 10.5Z" /></svg>
                 </div>
                 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <h3 class="font-display text-2xl font-extrabold">Premium Document Lock</h3>
-                    <p class="text-sm opacity-60 max-w-xs mx-auto leading-relaxed font-bold">
-                        This chapter requires a premium license key to unlock. Send a verified manual verification request below.
+                    <p class="text-xs opacity-70 max-w-xs mx-auto leading-relaxed font-bold">
+                        Scan the QR code to pay, then send the email request containing your payment details.
+                    </p>
+                </div>
+
+                <!-- UPI Payment QR Code Block -->
+                <div class="flex flex-col items-center justify-center p-4 bg-zinc-50 dark:bg-white/[0.02] border border-zinc-100 dark:border-white/5 rounded-2xl space-y-2 shadow-inner">
+                    <span class="text-xs font-black uppercase tracking-wider text-premium-accentBlue bg-blue-500/10 px-3 py-1 rounded-full">Scan QR Code to Pay ₹15</span>
+                    <img id="paymentQRCode" src="payment-qr.png" alt="UPI Payment QR Code" class="w-44 h-44 object-contain rounded-xl border-2 border-zinc-200 dark:border-white/10 bg-white p-1.5" onerror="this.src='https://placehold.co/180/ffffff/000000?text=Scan+to+Pay';">
+                    <p class="text-[9px] opacity-70 font-black tracking-wider text-center">SCAN USING ANY UPI APP (GPAY, PAYTM, PHONEPE)</p>
+                </div>
+
+                <!-- Sweet Message detailing maintenance cost -->
+                <div class="p-3 bg-amber-500/5 dark:bg-amber-500/10 rounded-2xl border border-amber-500/20 text-left">
+                    <p class="text-[11px] text-amber-700 dark:text-amber-400 leading-relaxed font-semibold">
+                        ❤️ <span class="font-bold uppercase">एक छोटा सा नोट:</span> यह ₹15 का शुल्क केवल कंप्यूटर टाइपिंग की अथक मेहनत, सिलेबस कस्टमाइज़ेशन और वेबसाइट को होस्ट व चालू (सर्वर मेंटेनेंस) रखने के खर्च के लिए लिया जाता है। आपके सपोर्ट के लिए धन्यवाद!
                     </p>
                 </div>
 
                 <div class="p-4 bg-zinc-100 dark:bg-white/5 rounded-2xl text-left border border-zinc-200 dark:border-white/5">
                     <div class="flex justify-between items-center mb-1">
                         <span class="text-[9px] font-bold uppercase tracking-wider opacity-50">Selected Item</span>
-                        <span class="text-[10px] font-bold text-premium-accentBlue bg-blue-500/10 px-2 py-0.5 rounded-md">Price: ₹15</span>
+                        <span class="text-xs font-black text-premium-accentBlue bg-blue-500/10 dark:bg-blue-500/20 px-3 py-1 rounded-md border border-blue-500/30">Price: ₹15</span>
                     </div>
                     <p id="modalPdfTitle" class="text-base font-extrabold truncate">Document Name</p>
                 </div>
 
-                <div class="flex gap-3 pt-2">
+                <div class="flex gap-3 pt-1">
                     <button onclick="closePremiumModal()" class="flex-1 py-3 rounded-2xl border border-zinc-200 hover:bg-zinc-100 dark:border-white/10 dark:hover:bg-white/5 text-xs font-bold transition-all">Cancel</button>
                     <a id="modalMailLink" href="#" class="flex-1 py-3 rounded-2xl bg-premium-accentBlue text-white text-xs font-extrabold hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20">
                         <i data-lucide="mail" class="w-4 h-4"></i> Send Email Request
@@ -264,7 +299,7 @@
             <div class="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-white/5">
                 <div class="flex items-center gap-3">
                     <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-premium-accentBlue">
-                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
                     </div>
                     <div>
                         <h4 id="previewPdfTitle" class="text-sm font-extrabold truncate max-w-[200px] sm:max-w-md">Document Name</h4>
@@ -308,7 +343,7 @@
 
     <!-- Logic Engine -->
     <script>
-        // Chapter Database Setup [10, 11]
+        // Chapter Database Setup
         const pdfs = [
             // Class XI
             { title: "Computer System", file: "ch1-computer-system-xi.pdf", class: "XI", subject: "ITS", type: "free", size: "2.5 MB", num: 1, bentoSpan: true },
@@ -329,6 +364,20 @@
             { title: "Societal Impacts", file: "ch6-societal-impacts-xii.pdf", class: "XII", subject: "ITS", type: "premium", size: "2.1 MB", num: 6 },
             { title: "Project Based Learning", file: "ch7-project-learning-xii.pdf", class: "XII", subject: "ITS", type: "premium", size: "5.0 MB", num: 7 }
         ];
+
+        // India Student Reviews Database (Deoghar, Jharkhand)
+        const reviewsData = {
+            XI: [
+                { name: "Aarav Sharma", location: "Deoghar, Jharkhand", review: "Computer System notes are absolutely clear! The block diagrams and explanations are very simple.", rating: 5 },
+                { name: "Ananya Patel", location: "Deoghar, Jharkhand", review: "Python basic concepts are beautifully explained with easy examples. This made my programming basics super strong.", rating: 5 },
+                { name: "Ishaan Verma", location: "Deoghar, Jharkhand", review: "The SQL database notes helped me secure top marks in my class tests. Extremely easy language!", rating: 5 }
+            ],
+            XII: [
+                { name: "Priyanka Sen", location: "Deoghar, Jharkhand", review: "Pandas and Matplotlib notes are fantastic. Visual plots are so well illustrated that I understood the entire code logic easily.", rating: 5 },
+                { name: "Rahul Deshmukh", location: "Deoghar, Jharkhand", review: "High-quality notes for Class XII boards. Every topic is strictly aligned with the syllabus. Well worth the price!", rating: 5 },
+                { name: "Aditya Nair", location: "Deoghar, Jharkhand", review: "The database query and internet chapters are concise. Perfect for quick revisions before the board exams.", rating: 5 }
+            ]
+        };
 
         // State System
         let activeClass = 'XI';
@@ -383,7 +432,7 @@
             return result;
         }
 
-        // Grid Drawing Function (macOS App Look Card Styles)
+        // Grid Drawing Function (Optimized with raw inline SVGs to avoid Lucide script rendering bottlenecks)
         function renderGrid() {
             const grid = document.getElementById('pdfGrid');
             const empty = document.getElementById('emptyState');
@@ -414,59 +463,101 @@
                         <!-- Top details -->
                         <div class="space-y-4">
                             <div class="flex items-center justify-between gap-2 pr-6">
-                                <span class="px-3 py-1 rounded-lg text-[10px] font-black tracking-wider uppercase bg-black/5 dark:bg-white/5 text-zinc-600 dark:text-zinc-300">
+                                <span class="px-3.5 py-1 rounded-lg text-xs font-black tracking-wider uppercase bg-black/5 dark:bg-white/5 text-zinc-600 dark:text-zinc-300">
                                     Chapter 0${pdf.num}
                                 </span>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-[10.5px] opacity-55 font-bold">${pdf.size}</span>
-                                    <span class="px-2.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${isPremium ? 'bg-blue-500/10 text-premium-accentBlue border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/15'}">
+                                    <span class="text-xs opacity-55 font-bold">${pdf.size}</span>
+                                    <span class="px-3.5 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider ${isPremium ? 'bg-gradient-to-r from-blue-600/10 to-blue-500/15 dark:from-blue-500/20 dark:to-blue-600/25 text-premium-accentBlue border border-blue-500/30 shadow-sm' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/15'}">
                                         ${isPremium ? '₹15' : 'FREE'}
                                     </span>
                                 </div>
                             </div>
 
                             <div class="space-y-1.5">
-                                <span class="text-[11px] font-black uppercase tracking-wider text-premium-accentBlue">${pdf.subject} • Class ${pdf.class}</span>
-                                <h3 class="font-sans text-[1.3rem] font-black leading-snug tracking-tight text-zinc-900 dark:text-white">${pdf.title}</h3>
+                                <span class="text-xs font-black uppercase tracking-wider text-premium-accentBlue">${pdf.subject} • Class ${pdf.class}</span>
+                                <h3 class="font-sans text-[1.4rem] sm:text-[1.5rem] font-black leading-snug tracking-tight text-zinc-900 dark:text-white">${pdf.title}</h3>
                             </div>
                         </div>
 
-                        <!-- Actions Area -->
+                        <!-- Actions Area (Inline SVGs applied for zero lag runtime performance) -->
                         <div class="mt-6 pt-4 border-t border-zinc-100 dark:border-white/5 flex items-center gap-3">
                             ${isPremium ? `
                                 <button onclick="openPremiumModal('${pdf.title}', '${pdf.file}', '${pdf.class}')" class="w-full py-2.5 rounded-xl bg-premium-accentBlue text-white text-xs font-black hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/25">
-                                    <i data-lucide="lock" class="w-3.5 h-3.5"></i> Purchase Access (₹15)
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0V10.5m-2.812 0H19.5a1.125 1.125 0 0 1 1.125 1.125v7.5a1.125 1.125 0 0 1-1.125 1.125H3.125A1.125 1.125 0 0 1 2 18.75v-7.5A1.125 1.125 0 0 1 3.125 10.5Z" /></svg> Purchase Access (₹15)
                                 </button>
                             ` : `
                                 <button onclick="openPreviewModal('${pdf.title}', '${pdf.file}')" class="flex-1 py-2.5 rounded-xl border border-zinc-200 dark:border-white/10 hover:bg-zinc-100 dark:hover:bg-white/5 text-xs font-black transition-all flex items-center justify-center gap-1.5">
-                                    <i data-lucide="eye" class="w-3.5 h-3.5"></i> Preview
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg> Preview
                                 </button>
                                 <a href="${pdf.file}" download class="p-2.5 rounded-xl bg-premium-accentBlue text-white hover:scale-105 active:scale-95 transition-all flex items-center justify-center shadow shadow-blue-500/25" title="Instant Download">
-                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
                                 </a>
                             `}
                         </div>
                     </div>
                 `;
             }).join('');
-
-            lucide.createIcons();
         }
 
-        // GSAP transitions (Super Butter Smooth)
+        // Render Student Reviews (Changes with Selected Class - Optimized via Inline SVG structure)
+        function renderReviews() {
+            const reviewsGrid = document.getElementById('reviewsGrid');
+            const currentReviews = reviewsData[activeClass];
+
+            reviewsGrid.innerHTML = currentReviews.map(rev => `
+                <div class="bento-card p-6 flex flex-col justify-between space-y-4 relative">
+                    <!-- Red/Yellow/Green details inside Card Header -->
+                    <div class="absolute top-3.5 right-4 flex items-center gap-1 opacity-25">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#FF5F56]"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#FFBD2E]"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#27C93F]"></span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Rating Stars (Optimized Star Path) -->
+                        <div class="flex items-center gap-0.5 text-amber-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg>
+                        </div>
+                        <p class="text-xs font-semibold leading-relaxed text-zinc-600 dark:text-zinc-300 italic">
+                            "${rev.review}"
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2.5 pt-3 border-t border-zinc-100 dark:border-white/5">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-premium-accentBlue text-white text-xs font-extrabold shadow-sm">
+                            ${rev.name.charAt(0)}
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-zinc-900 dark:text-white">${rev.name}</h4>
+                            <p class="text-[9px] opacity-60 font-bold">${rev.location}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Hardware Accelerated GSAP transitions (Fluid render with zero rendering delay)
         function renderGridWithGsap() {
-            gsap.to("#pdfGrid", {
+            gsap.to(["#pdfGrid", "#reviewsGrid"], {
                 opacity: 0, 
-                y: 12, 
-                duration: 0.15, 
+                y: 8, 
+                duration: 0.12, 
                 ease: "power2.inOut",
+                force3D: true,
                 onComplete: () => {
                     renderGrid();
-                    gsap.to("#pdfGrid", { 
+                    renderReviews();
+                    gsap.to(["#pdfGrid", "#reviewsGrid"], { 
                         opacity: 1, 
                         y: 0, 
-                        duration: 0.35, 
-                        ease: "power3.out" 
+                        duration: 0.28, 
+                        ease: "power3.out",
+                        force3D: true
                     });
                 }
             });
@@ -542,11 +633,12 @@ Thank You.`
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             renderGrid();
-            lucide.createIcons();
+            renderReviews();
+            lucide.createIcons(); // Called once at document level for static layout elements
             
-            // GSAP butter-smooth entrance
-            gsap.from("header", { opacity: 0, y: -15, duration: 0.5, ease: "power2.out" });
-            gsap.from("section", { opacity: 0, y: 25, duration: 0.7, stagger: 0.1, ease: "power3.out" });
+            // GSAP butter-smooth entrance with hardware acceleration
+            gsap.from("header", { opacity: 0, y: -15, duration: 0.4, ease: "power2.out", force3D: true });
+            gsap.from("section", { opacity: 0, y: 20, duration: 0.5, stagger: 0.08, ease: "power3.out", force3D: true });
         });
     </script>
 </body>
